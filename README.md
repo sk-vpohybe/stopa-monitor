@@ -1,4 +1,4 @@
-Stopa Monitor II.
+Raspberry Pi based Stopa Monitor
 =============
 
 Raspberry Pi (Raspbian) based device with web camera, thermometer and wifi/gprs modem.
