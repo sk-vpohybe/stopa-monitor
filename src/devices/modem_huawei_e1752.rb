@@ -7,7 +7,7 @@ class ModemHuaweiE1752
   def connect
     @logger.info "trying to connect Huawei E1752"
     Thread.new {`sudo wvdial orange &`}
-    5.times do
+    10.times do
       sleep 3
       return if connected?
     end
@@ -16,12 +16,13 @@ class ModemHuaweiE1752
   end
   
   def connected?
-    info = `ifconfig #{NETWORK_INTERFACE} 2>&1`
-    if info.include?('Device not found')
+    ifconfig_status = `/sbin/ifconfig #{NETWORK_INTERFACE} 2>&1`
+    @logger.debug ifconfig_status
+    if ifconfig_status.include?('Device not found')
       @logger.info "network interface #{NETWORK_INTERFACE} not found"
       return false 
     else
-      if info.include?('RUNNING')
+      if ifconfig_status.include?('RUNNING')
         @logger.info "network interface #{NETWORK_INTERFACE} is connected"
         return true
       else
