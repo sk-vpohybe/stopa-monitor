@@ -1,4 +1,5 @@
 class ModemHuaweiE1752
+  NETWORK_INTERFACE = 'ppp0'
   def initialize logger
     @logger = logger
   end
@@ -15,19 +16,23 @@ class ModemHuaweiE1752
   end
   
   def connected?
-    info = `ifconfig ppp0 2>&1`
+    info = `ifconfig #{NETWORK_INTERFACE} 2>&1`
     if info.include?('Device not found')
-      @logger.info "not connected"
+      @logger.info "network interface #{NETWORK_INTERFACE} not found"
       return false 
     else
-      #TODO: check if interface is RUNNING
-      @logger.info "we are connected"
-      return true
+      if info.include?('RUNNING')
+        @logger.info "network interface #{NETWORK_INTERFACE} is connected"
+        return true
+      else
+        @logger.info "network interface #{NETWORK_INTERFACE} found, but is not connected"
+        return false 
+      end
     end
   end
   
   def disconnect
-    @logger.info "disconnecting"
+    @logger.info "disconnecting network interface #{NETWORK_INTERFACE}"
     `sudo pkill wvdial`
   end
 end

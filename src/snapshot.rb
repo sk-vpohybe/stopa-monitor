@@ -66,7 +66,7 @@ class Snapshot
       begin
         device.connect
         if device.connected?
-          sleep 10 # TODO: remove this sleep when device.connected? will check that interface is really RUNNING
+          sleep 10 # make sure the connection is really established
           block.call
         end
       rescue => e
@@ -85,13 +85,14 @@ class Snapshot
     remote_working_dir = upload_config::REMOTE_WORKING_DIR
     
     @logger.info "About to upload data to '#{host}' as user '#{login}'"
+
+    begin    
+      ftp = Net::FTP.new host
+      ftp.login login, password
     
-    ftp = Net::FTP.new host
-    ftp.login login, password
+      @logger.info 'connection established'
     
-    @logger.info 'connection established'
-    
-    begin
+
       remote_snapshot_dir = File.join remote_working_dir, @timestamp
       ftp.mkdir remote_snapshot_dir
       @logger.debug "created remote upload dir #{remote_snapshot_dir}"
@@ -102,10 +103,19 @@ class Snapshot
       files_to_transfer.each do |local_file_path|
         filename = File.basename local_file_path
         remote_file_path = File.join remote_snapshot_dir, filename
+        t1 = Time.now
         ftp.putbinaryfile local_file_path, remote_file_path
+        t2 = Time.now
+        time_diff = (t2 - t1).round 2
+        @logger.debug "uploaded file: #{filename}. size:#{File.size(local_file_path)} bytes. upload time:#{time_diff} seconds"
       end
+    rescue => e
+      @logger.info "ftp upload problem: #{e.class} #{e}"
     ensure
-      ftp.close
+      begin
+        ftp.close
+      rescue
+      end
     end
     
     @logger.info 'upload finished'
