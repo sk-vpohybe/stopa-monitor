@@ -5,6 +5,10 @@ class Snapshot
     '041e:4095' => CameraCreativeLiveHD
   }
   
+  TRANSFER_DEVICES = {
+    '12d1:141b' => ModemHuaweiE1752
+  }
+  
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
     @snapshot_dir = File.join WORKING_DIR, @timestamp
@@ -19,6 +23,7 @@ class Snapshot
   
   def detect_devices
     @capture_devices = []
+    @transfer_devices = []
     lsusb = `lsusb`
     device_ids = lsusb.split("\n").collect{|l| l.split(' ')[5]}
     device_ids.each do |device_id|
@@ -26,9 +31,14 @@ class Snapshot
         device_klass = CAPTURE_DEVICES[device_id]
         @capture_devices << device_klass
       end
+      
+      if TRANSFER_DEVICES[device_id]
+        device_klass = TRANSFER_DEVICES[device_id]
+        @transfer_devices << device_klass
+      end 
     end
-    
-    @logger.info "detected following capturable devices: #{@capture_devices.join(', ')}"
+    @logger.info "detected following capture devices: #{@capture_devices.join(', ')}"
+    @logger.info "detected following transfer devices: #{@transfer_devices.join(', ')}"
   end
   
   def capture_data
@@ -41,6 +51,28 @@ class Snapshot
         @logger.info "done"
       rescue => e
         @logger.error "#{e} #{e.class}"
+      end
+    end
+  end
+  
+  def in_trasmission_window &block
+    if @transfer_devices.size == 0
+      @logger.warn "no trasfer devices found"
+    else
+      
+      device_klass = @transfer_devices.first
+      @logger.info "using #{device_klass}"
+      device = device_klass.new @logger
+      begin
+        device.connect
+        if device.connected?
+          sleep 10 # TODO: remove this sleep when device.connected? will check that interface is really RUNNING
+          block.call
+        end
+      rescue => e
+        @logger.error "#{e} #{e.class}"
+      ensure
+        device.disconnect
       end
     end
   end
@@ -63,7 +95,7 @@ class Snapshot
       remote_snapshot_dir = File.join remote_working_dir, @timestamp
       ftp.mkdir remote_snapshot_dir
       @logger.debug "created remote upload dir #{remote_snapshot_dir}"
-      files_to_transfer = Dir.glob File.join(@snapshot_dir, '*') # TODO: upload the log file as the last file and measure upload speed/time
+      files_to_transfer = Dir.glob File.join(@snapshot_dir, '*[!log]') # TODO: upload the log file as the last file and measure upload speed/time
       
       @logger.info "About to upload #{files_to_transfer.size} files"
       
@@ -80,6 +112,7 @@ class Snapshot
   end
   
   def close
+    @logger.info "closing snapshot"
     @logger.close
   end
 end

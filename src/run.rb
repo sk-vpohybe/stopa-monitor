@@ -11,8 +11,9 @@ s = Snapshot.new
 s.detect_devices
 s.capture_data
 
-#if s.connection_established?
+s.in_trasmission_window do
   s.upload UploadConfig
-#end
+end
 
 s.close
+exit 0
