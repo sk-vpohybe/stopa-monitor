@@ -1,5 +1,5 @@
 module UploadConfig
-  HOST = 'localhost'
+  HOST = 'my.server.com'
   LOGIN = 'pi'
   PASSWORD = 'raspberry'
   REMOTE_WORKING_DIR = '/home/pi/stopa_monitor_uploads'
