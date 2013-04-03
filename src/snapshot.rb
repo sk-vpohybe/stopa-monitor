@@ -2,7 +2,8 @@ class Snapshot
   WORKING_DIR = '/home/pi/stopa_monitor'
   CAPTURE_DEVICES = {
     '0c45:7401' => ThermometerTEMPer1,
-    '041e:4095' => CameraCreativeLiveHD
+    '041e:4095' => CameraCreativeLiveHD,
+    '0c45:6340' => CameraCanyonCNR113
   }
   
   TRANSFER_DEVICES = {

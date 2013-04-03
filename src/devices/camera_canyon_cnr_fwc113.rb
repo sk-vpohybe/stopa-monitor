@@ -1,6 +1,6 @@
-class CameraCreativeLiveHD
+class CameraCanyonCNR113  #  Canyon CNR-FWC113
   TIMEOUT = 15 #seconds
-  OUTPUT_FILE = 'photo_creative_live_hd.jpg'
+  OUTPUT_FILE = 'photo_canyon_cnr_113.jpg'
 
   def initialize logger, snapshot_dir
     @logger = logger
@@ -11,7 +11,7 @@ class CameraCreativeLiveHD
   def capture
     begin
       Timeout::timeout(15) do
-        @logger.debug `fswebcam --no-banner -d /dev/video0 -i 0 -r 1280x720 --jpeg 80 -D 1 #{@output_file} 2>&1`
+        @logger.debug `fswebcam --no-banner -d /dev/video0 -i 0 -r 640x480 --jpeg 80 -D 1 #{@output_file} 2>&1`
       end
     rescue Timeout::Error
       @logger.error '15 second timeout expired while taking photo'
