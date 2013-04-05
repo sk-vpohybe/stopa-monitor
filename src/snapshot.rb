@@ -16,6 +16,7 @@ class Snapshot
     Dir.mkdir @snapshot_dir
     
     logfile_path = File.join @snapshot_dir, 'stopa.log'
+    puts "logfile path: #{logfile_path}"
     @logger = Logger.new logfile_path
     @logger.datetime_format = '%Y-%m-%d %H:%M:%S'
 
@@ -57,33 +58,43 @@ class Snapshot
   end
   
   def in_trasmission_window &block
-    if @transfer_devices.size == 0
-      @logger.warn "no trasfer devices found"
+    network_status = NetworkStatus.new @logger, UploadConfig::HOST
+    
+    if network_status.connected?
+      @logger.warn "wont use any tranfer device, connection is already established"
+      block.call
     else
       
-      device_klass = @transfer_devices.first
-      @logger.info "using #{device_klass}"
-      device = device_klass.new @logger
-      begin
-        device.connect
-        if device.connected?
-          sleep 10 # make sure the connection is really established
-          block.call
+      if @transfer_devices.size == 0
+        @logger.warn "no trasfer devices found"
+      else
+      
+        device_klass = @transfer_devices.first
+        @logger.info "using trasfer device #{device_klass}"
+        device = device_klass.new @logger
+        begin
+          device.connect
+          if device.connected?
+            sleep 10 # make sure the connection is really established
+            if network_status.connected?
+              block.call
+            end
+          end
+        rescue => e
+          @logger.error "#{e.class} #{e}"
+        ensure
+          device.disconnect
         end
-      rescue => e
-        @logger.error "#{e} #{e.class}"
-      ensure
-        device.disconnect
       end
+      
     end
   end
   
-  def upload upload_config
-    
-    host = upload_config::HOST
-    login = upload_config::LOGIN
-    password = upload_config::PASSWORD
-    remote_working_dir = upload_config::REMOTE_WORKING_DIR
+  def upload
+    host = UploadConfig::HOST
+    login = UploadConfig::LOGIN
+    password = UploadConfig::PASSWORD
+    remote_working_dir = UploadConfig::REMOTE_WORKING_DIR
     
     @logger.info "About to upload data to '#{host}' as user '#{login}'"
 
