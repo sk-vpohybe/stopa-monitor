@@ -108,7 +108,8 @@ class Snapshot
       remote_snapshot_dir = File.join remote_working_dir, @timestamp
       ftp.mkdir remote_snapshot_dir
       @logger.debug "created remote upload dir #{remote_snapshot_dir}"
-      files_to_transfer = Dir.glob File.join(@snapshot_dir, '*[!log]') # TODO: upload the log file as the last file and measure upload speed/time
+      files_to_transfer = Dir.glob File.join(@snapshot_dir, '*') 
+      files_to_transfer.reject!{|f| f =~ /\.log\Z/}
       
       @logger.info "About to upload #{files_to_transfer.size} files"
       
