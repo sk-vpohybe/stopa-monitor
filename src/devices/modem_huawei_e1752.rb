@@ -6,7 +6,7 @@ class ModemHuaweiE1752
   
   def connect
     @logger.info "trying to connect Huawei E1752"
-    Thread.new {`sudo wvdial orange &`}
+    Thread.new {`sudo wvdial >>#{@logger.logfile_path} 2>&1 &`}
     10.times do
       sleep 3
       return if connected?
@@ -34,6 +34,6 @@ class ModemHuaweiE1752
   
   def disconnect
     @logger.info "disconnecting network interface #{NETWORK_INTERFACE}"
-    `sudo pkill wvdial`
+    @logger.debug `sudo pkill wvdial 2>&1`
   end
 end

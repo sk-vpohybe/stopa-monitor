@@ -17,7 +17,7 @@ class Snapshot
     
     logfile_path = File.join @snapshot_dir, 'stopa.log'
     puts "logfile path: #{logfile_path}"
-    @logger = Logger.new logfile_path
+    @logger = OpenLogger.new logfile_path
     @logger.datetime_format = '%Y-%m-%d %H:%M:%S'
 
     @logger.info 'Stopa Monitor 2.0: starting data capture session'
