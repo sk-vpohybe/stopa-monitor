@@ -10,5 +10,7 @@ Some additional information and random thoughts [be here](https://github.com/sk-
 
 [Info on original Stopa Monitor](http://www.nabezky.sk/monitor_na_korenatom_oznam) (non-raspberry pi, but with battery) made by [Jano Gvozdjak](http://physicus.eu/).
 
+contact: peter dot vojtek at gmail dot com
+
 ![first working prototype](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor2a.jpg)
 ![first working prototype - opened](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor2b.jpg)
