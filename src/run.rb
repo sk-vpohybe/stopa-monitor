@@ -1,4 +1,3 @@
-require 'logger'
 require 'timeout'
 require 'net/ftp'
 
@@ -6,9 +5,9 @@ current_path = File.absolute_path(File.dirname(__FILE__))
 
 devices = Dir.glob File.join(current_path, 'devices/*.rb')
 devices.each {|d| require d}
-require File.join(current_path, 'snapshot.rb')
-require File.join(current_path, 'upload_config.rb')
-require File.join(current_path, 'network_status.rb')
+['snapshot.rb', 'upload_config.rb', 'network_status.rb', 'open_logger.rb'].each do |rb|
+  require File.join(current_path, rb)
+end
 
 s = Snapshot.new
 s.detect_devices
