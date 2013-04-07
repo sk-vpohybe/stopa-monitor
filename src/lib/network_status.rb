@@ -4,12 +4,10 @@ class NetworkStatus
     @ping_host = ping_host
   end
   
-  def connected?
-    ifconfig_status = `/sbin/ifconfig 2>&1`
-    @logger.debug ifconfig_status
-    
-    if ifconfig_status.include?('RUNNING')
-      @logger.info "NetworkStatus: connected to network"
+  def connected?    
+    interface = running_interface
+    if interface
+      @logger.info "NetworkStatus: connected to network via #{interface}"
       if ping_ok?
         @logger.info "NetworkStatus: ping test successful"
         return true
@@ -24,6 +22,17 @@ class NetworkStatus
   end
   
   private
+  def running_interface
+    interfaces = `/sbin/ifconfig -s 2>&1`.split("\n")[1..-1].collect{|line| line.split(' ').first}
+    (interfaces - ['lo']).each do |interface|
+      ifconfig_status = `/sbin/ifconfig #{interface} 2>&1`
+      if ifconfig_status.include?('RUNNING')
+        return interface
+      end
+    end
+    return nil
+  end
+  
   def ping_ok?
     @logger.debug "NetworkStatus: pinging #{@ping_host}"
     p = `ping #{@ping_host} -c 1 -W 10 2>&1`
