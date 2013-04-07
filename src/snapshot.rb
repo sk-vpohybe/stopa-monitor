@@ -1,3 +1,5 @@
+require 'net/ftp'
+
 class Snapshot
   WORKING_DIR = '/home/pi/stopa_monitor'
   CAPTURE_DEVICES = {
@@ -58,7 +60,7 @@ class Snapshot
   end
   
   def in_trasmission_window &block
-    network_status = NetworkStatus.new @logger, UploadConfig::HOST
+    network_status = NetworkStatus.new @logger, StopaMonitorConfig::HOST
     
     if network_status.connected?
       @logger.warn "wont use any tranfer device, connection is already established"
@@ -91,10 +93,10 @@ class Snapshot
   end
   
   def upload
-    host = UploadConfig::HOST
-    login = UploadConfig::LOGIN
-    password = UploadConfig::PASSWORD
-    remote_working_dir = UploadConfig::REMOTE_WORKING_DIR
+    host = StopaMonitorConfig::HOST
+    login = StopaMonitorConfig::LOGIN
+    password = StopaMonitorConfig::PASSWORD
+    remote_working_dir = StopaMonitorConfig::REMOTE_WORKING_DIR
     
     @logger.info "About to upload data to '#{host}' as user '#{login}'"
 

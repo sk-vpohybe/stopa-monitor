@@ -1,0 +1,9 @@
+module StopaMonitorConfig
+  NAME = 'D0001'
+  HOST = '37.205.11.79'
+  LOGIN = 'login'
+  PASSWORD = 'password'
+  REMOTE_WORKING_DIR = "/home/#{LOGIN}/snapshots"
+  LATITUDE = '48.1485'
+  LONGITUDE = '17.1067'
+end
