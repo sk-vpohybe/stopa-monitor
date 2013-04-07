@@ -1,4 +1,6 @@
 class CameraCreativeLiveHD
+  include DaylightDetector
+  
   TIMEOUT = 15 #seconds
   OUTPUT_FILE = 'photo_creative_live_hd.jpg'
 
