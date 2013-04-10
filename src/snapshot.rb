@@ -45,6 +45,11 @@ class Snapshot
     @logger.info "detected following transfer devices: #{@transfer_devices.join(', ')}"
   end
   
+  def run_health_check
+    h = HealthCheck.new @logger
+    h.run
+  end
+  
   def capture_data
     @capture_devices.each do |device_klass|
       begin
@@ -63,7 +68,7 @@ class Snapshot
     network_status = NetworkStatus.new @logger, StopaMonitorConfig::HOST
     
     if network_status.connected?
-      @logger.warn "wont use any tranfer device, connection is already established"
+      @logger.info "wont use any tranfer device, connection is already established"
       block.call
     else
       

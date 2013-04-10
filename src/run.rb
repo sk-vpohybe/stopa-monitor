@@ -13,6 +13,7 @@ require  File.join current_path, 'stopa_monitor_config.rb'
 
 s = Snapshot.new
 s.detect_devices
+s.run_health_check
 s.capture_data
 
 s.in_trasmission_window do
