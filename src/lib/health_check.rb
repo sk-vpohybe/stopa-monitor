@@ -1,11 +1,12 @@
 class HealthCheck
-  
   LOW_DISK_MB = 30
   LOW_RAM_MB = 30 # mb
   
-  def initialize logger
+  def initialize logger, capture_devices, transfer_devices
     @logger = logger
     @logger.debug "starting Health Check"
+    @detected_capture_devices = capture_devices
+    @detected_transfer_devices = transfer_devices
   end
   
   def run
@@ -28,6 +29,16 @@ class HealthCheck
       check_ok = false
       @logger.warn "free RAM space is only #{ram} MB"
     end   
+    
+    if missing_capture_devices.size > 0
+      check_ok = false
+      @logger.warn "missing capture device(s): #{missing_capture_devices.join(' ')}"
+    end
+    
+    if missing_transfer_devices.size > 0
+      check_ok = false
+      @logger.warn "missing transfer device(s): #{missing_transfer_devices.join(' ')}"
+    end
     
     if check_ok
       @logger.info "Health Check OK"
@@ -53,4 +64,12 @@ class HealthCheck
     free_ram_in_mb = `free -m`.split("\n")[1].split(" ")[3].to_i
     return free_ram_in_mb
   end
+  
+  def missing_capture_devices
+    StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES - @detected_capture_devices
+  end
+  
+  def missing_transfer_devices
+    StopaMonitorConfig::ATTACHED_TRANSFER_DEVICES - @detected_transfer_devices
+  end 
 end

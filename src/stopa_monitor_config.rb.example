@@ -6,4 +6,6 @@ module StopaMonitorConfig
   REMOTE_WORKING_DIR = "/home/#{LOGIN}/snapshots"
   LATITUDE = '48.1485'
   LONGITUDE = '17.1067'
+  ATTACHED_CAPTURE_DEVICES = [ThermometerTEMPer1, CameraCreativeLiveHD]
+  ATTACHED_TRANSFER_DEVICES = [ModemHuaweiE1752]
 end

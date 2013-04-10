@@ -46,7 +46,7 @@ class Snapshot
   end
   
   def run_health_check
-    h = HealthCheck.new @logger
+    h = HealthCheck.new @logger, @capture_devices, @transfer_devices
     h.run
   end
   
