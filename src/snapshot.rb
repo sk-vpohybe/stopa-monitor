@@ -9,7 +9,8 @@ class Snapshot
   }
   
   TRANSFER_DEVICES = {
-    '12d1:141b' => ModemHuaweiE1752
+    '12d1:141b' => ModemHuaweiE1752,
+    '12d1:1001' => ModemHuaweiE169
   }
   
   def initialize
