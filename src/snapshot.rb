@@ -49,6 +49,7 @@ class Snapshot
   def run_health_check
     h = HealthCheck.new @logger, @capture_devices, @transfer_devices
     h.run
+    @health_check_ok = h.ok
   end
   
   def capture_data
@@ -149,8 +150,15 @@ class Snapshot
     end
   end
   
-  def close
+  def close_and_reboot_if_necessary
     @logger.info "closing snapshot"
-    @logger.close
+    
+    if @health_check_ok
+      @logger.close
+    else
+      @logger.warn "rebooting device due to health check results"
+      @logger.close
+      exec "sudo reboot"
+    end
   end
 end

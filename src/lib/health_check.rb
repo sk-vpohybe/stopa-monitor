@@ -2,6 +2,8 @@ class HealthCheck
   LOW_DISK_MB = 30
   LOW_RAM_MB = 30 # mb
   
+  attr_reader :ok
+  
   def initialize logger, capture_devices, transfer_devices
     @logger = logger
     @logger.debug "starting Health Check"
@@ -41,7 +43,10 @@ class HealthCheck
     end
     
     if check_ok
+      @ok = true
       @logger.info "Health Check OK"
+    else
+      @ok = false
     end
   end
   

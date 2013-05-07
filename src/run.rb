@@ -19,5 +19,6 @@ s.capture_data
 s.in_trasmission_window do
   s.upload
 end
-s.close
+s.close_and_reboot_if_necessary
+
 exit 0
