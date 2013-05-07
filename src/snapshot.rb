@@ -1,7 +1,7 @@
 require 'net/ftp'
 
 class Snapshot
-  WORKING_DIR = '/home/pi/stopa_monitor'
+  WORKING_DIR = '/home/pi/snapshots'
   CAPTURE_DEVICES = {
     '0c45:7401' => ThermometerTEMPer1,
     '041e:4095' => CameraCreativeLiveHD,
