@@ -2,13 +2,13 @@ require 'net/ftp'
 
 class Snapshot
   WORKING_DIR = '/home/pi/snapshots'
-  CAPTURE_DEVICES = { # USB
+  USB_CAPTURE_DEVICES = { # USB
     '0c45:7401' => ThermometerTEMPer1,
     '041e:4095' => CameraCreativeLiveHD,
     '0c45:6340' => CameraCanyonCNR113
   }
   
-  TRANSFER_DEVICES = { # USB
+  USB_TRANSFER_DEVICES = { # USB
     '12d1:141b' => ModemHuaweiE1752,
     '12d1:1001' => ModemHuaweiE169
   }
@@ -34,18 +34,18 @@ class Snapshot
     lsusb = `lsusb`
     device_ids = lsusb.split("\n").collect{|l| l.split(' ')[5]}
     device_ids.each do |device_id|
-      if CAPTURE_DEVICES[device_id]
-        device_klass = CAPTURE_DEVICES[device_id]
+      if USB_CAPTURE_DEVICES[device_id]
+        device_klass = USB_CAPTURE_DEVICES[device_id]
         @capture_devices << device_klass
       end
       
-      if TRANSFER_DEVICES[device_id]
-        device_klass = TRANSFER_DEVICES[device_id]
+      if USB_TRANSFER_DEVICES[device_id]
+        device_klass = USB_TRANSFER_DEVICES[device_id]
         @transfer_devices << device_klass
       end 
     end
     
-    # there is not way way how to detect GPIO devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
+    # there is no way how to detect GPIO devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
     StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES.each do |device_klass|
       if GPIO_CAPTURE_DEVICES.include? device_klass
         @capture_devices << device_klass
