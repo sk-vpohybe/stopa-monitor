@@ -2,16 +2,18 @@ require 'net/ftp'
 
 class Snapshot
   WORKING_DIR = '/home/pi/snapshots'
-  CAPTURE_DEVICES = {
+  CAPTURE_DEVICES = { # USB
     '0c45:7401' => ThermometerTEMPer1,
     '041e:4095' => CameraCreativeLiveHD,
     '0c45:6340' => CameraCanyonCNR113
   }
   
-  TRANSFER_DEVICES = {
+  TRANSFER_DEVICES = { # USB
     '12d1:141b' => ModemHuaweiE1752,
     '12d1:1001' => ModemHuaweiE169
   }
+  
+  GPIO_CAPTURE_DEVICES = [ThermometerHygrometerDHT11]
   
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
@@ -42,6 +44,14 @@ class Snapshot
         @transfer_devices << device_klass
       end 
     end
+    
+    # there is not way way how to detect GPIO devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
+    StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES.each do |device_klass|
+      if GPIO_CAPTURE_DEVICES.include? device_klass
+        @capture_devices << device_klass
+      end
+    end
+    
     @logger.info "detected following capture devices: #{@capture_devices.join(', ')}"
     @logger.info "detected following transfer devices: #{@transfer_devices.join(', ')}"
   end
@@ -158,7 +168,17 @@ class Snapshot
     else
       @logger.warn "rebooting device due to health check results"
       @logger.close
-      exec "sudo reboot"
+      if in_production_mode?
+        exec "sudo reboot"
+      end
+    end
+  end
+  
+  private 
+  
+  def in_production_mode?
+    `crontab -l`.split("\n").find do |l| 
+      l[0] != '#' && l.include?('stopa-monitor/src/run.rb')
     end
   end
 end
