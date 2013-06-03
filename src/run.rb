@@ -1,3 +1,11 @@
+puts "Starting Stopa Monitor"
+
+# source: http://rosettacode.org/wiki/Determine_if_only_one_instance_is_running#Ruby
+unless File.new(__FILE__).flock(File::LOCK_EX | File::LOCK_NB)
+  puts "There is already an instance running, I quit"
+  exit 1
+end
+
 require 'timeout'
 
 current_path = File.absolute_path(File.dirname(__FILE__))
