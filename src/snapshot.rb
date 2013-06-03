@@ -18,6 +18,7 @@ class Snapshot
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
     @snapshot_dir = File.join WORKING_DIR, @timestamp
+    
     Dir.mkdir @snapshot_dir
     
     logfile_path = File.join @snapshot_dir, 'stopa.log'
@@ -118,46 +119,38 @@ class Snapshot
     files_to_transfer = Dir.glob File.join(@snapshot_dir, '*') 
     files_to_transfer.reject!{|f| f =~ /\.log\Z/}
     
-    if files_to_transfer.size > 0
-    
-      @logger.info "About to upload data to '#{host}' as user '#{login}'"
+    @logger.info "About to upload data to '#{host}' as user '#{login}'"
 
-      begin    
-        ftp = Net::FTP.new host
-        ftp.login login, password
+    begin    
+      ftp = Net::FTP.new host
+      ftp.login login, password
     
-        @logger.info 'connection established'
+      @logger.info 'connection established'
     
-
-        remote_snapshot_dir = File.join remote_working_dir, @timestamp
-        ftp.mkdir remote_snapshot_dir
-        @logger.debug "created remote upload dir #{remote_snapshot_dir}"
-
+      remote_snapshot_dir = File.join remote_working_dir, @timestamp
+      ftp.mkdir remote_snapshot_dir
+      @logger.debug "created remote upload dir #{remote_snapshot_dir}"
       
-        @logger.info "About to upload #{files_to_transfer.size} files"
-      
-        files_to_transfer.each do |local_file_path|
-          filename = File.basename local_file_path
-          remote_file_path = File.join remote_snapshot_dir, filename
-          t1 = Time.now
-          ftp.putbinaryfile local_file_path, remote_file_path
-          t2 = Time.now
-          time_diff = (t2 - t1).round 2
-          @logger.debug "uploaded file: #{filename}. size:#{File.size(local_file_path)} bytes. upload time:#{time_diff} seconds"
-        end
-      rescue => e
-        @logger.info "ftp upload problem: #{e.class} #{e}"
-      ensure
-        begin
-          ftp.close
-        rescue
-        end
+      @logger.info "About to upload #{files_to_transfer.size} files"
+      files_to_transfer.each do |local_file_path|
+        filename = File.basename local_file_path
+        remote_file_path = File.join remote_snapshot_dir, filename
+        t1 = Time.now
+        ftp.putbinaryfile local_file_path, remote_file_path
+        t2 = Time.now
+        time_diff = (t2 - t1).round 2
+        @logger.debug "uploaded file: #{filename}. size:#{File.size(local_file_path)} bytes. upload time:#{time_diff} seconds"
       end
-    
-      @logger.info 'upload finished'
-    else
-      @logger.info "0 files to upload, wont connect to remote host"
+    rescue => e
+      @logger.info "ftp upload problem: #{e.class} #{e}"
+    ensure
+      begin
+        ftp.close
+      rescue
+      end
     end
+    
+    @logger.info 'upload finished'
   end
   
   def close_and_reboot_if_necessary
