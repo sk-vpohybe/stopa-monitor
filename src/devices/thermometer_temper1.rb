@@ -1,5 +1,5 @@
 class ThermometerTEMPer1 # 'TEMPer1V1.2'
-  TIMEOUT = 5 #seconds
+  TIMEOUT = 15 #seconds
   OUTPUT_FILE = 'temperature_temper1.txt'
 
   def initialize logger, snapshot_dir
@@ -12,14 +12,19 @@ class ThermometerTEMPer1 # 'TEMPer1V1.2'
   def capture
     begin
       Timeout::timeout(TIMEOUT) do
-        raw_output = `sudo pcsensor -c 2>&1`
-        @logger.debug raw_output # "2013/03/28 20:20:10 Temperature 23.56C\n"
-        t = raw_output.split(' ').last
-        if t.include?('C')
-          @logger.info "parsed temperature: #{t}"
-          @temperature = t
-        else
-          @logger.error "failed to parse temperature from raw output: #{raw_output}"
+        # there is some issue with pcsensors binary - eah 13th measurement fails with USB interrupt read: Resource temporarily unavailable
+        3.times do |i|
+          raw_output = `sudo pcsensor -c 2>&1`
+          @logger.debug "Measurement No #{i+1}: #{raw_output}" # "2013/03/28 20:20:10 Temperature 23.56C\n"
+          t = raw_output.split(' ').last
+          if t.include?('C')
+            @logger.info "parsed temperature: #{t}"
+            @temperature = t
+            break
+          else
+            @logger.error "failed to parse temperature"
+            sleep 1
+          end
         end
       end
     rescue Timeout::Error
