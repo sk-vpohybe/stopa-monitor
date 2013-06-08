@@ -1,4 +1,5 @@
 require 'net/ftp'
+require 'net/ssh'
 
 class Snapshot
   WORKING_DIR = '/home/pi/snapshots'
@@ -18,6 +19,7 @@ class Snapshot
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
     @snapshot_dir = File.join WORKING_DIR, @timestamp
+    @reverse_ssh_tunnel_port = nil
     
     Dir.mkdir @snapshot_dir
     
@@ -124,9 +126,9 @@ class Snapshot
     begin    
       ftp = Net::FTP.new host
       ftp.login login, password
-    
       @logger.info 'connection established'
-    
+      
+      determine_reverse_ssh_tunnel_port ftp
       remote_snapshot_dir = File.join remote_working_dir, @timestamp
       ftp.mkdir remote_snapshot_dir
       @logger.debug "created remote upload dir #{remote_snapshot_dir}"
@@ -142,7 +144,7 @@ class Snapshot
         @logger.debug "uploaded file: #{filename}. size:#{File.size(local_file_path)} bytes. upload time:#{time_diff} seconds"
       end
     rescue => e
-      @logger.info "ftp upload problem: #{e.class} #{e}"
+      @logger.error "ftp upload problem: #{e.class} #{e}"
     ensure
       begin
         ftp.close
@@ -151,6 +153,30 @@ class Snapshot
     end
     
     @logger.info 'upload finished'
+  end
+  
+  def establish_reverse_ssh_tunnel_if_required_by_server
+    return unless @reverse_ssh_tunnel_port
+    
+    @logger.info "about to establish reverse SSH tunnel to #{StopaMonitorConfig::HOST} on port #{@reverse_ssh_tunnel_port}"
+    begin
+      ssh = Net::SSH.start StopaMonitorConfig::HOST, StopaMonitorConfig::LOGIN
+      ssh.forward.remote 22, 'localhost', @reverse_ssh_tunnel_port
+      started_at = Time.now
+      # stay connected for 1 hour, check elapsed time every 60 seconds
+      ssh.loop(60) do
+        diff = Time.now - started_at
+        diff < 3600
+      end
+      
+    rescue => e
+      @logger.error "reverse ssh problem: #{e.class} #{e}"
+      begin
+        ssh.close
+      rescue
+      end
+    end
+    
   end
   
   def close_and_reboot_if_necessary
@@ -169,9 +195,24 @@ class Snapshot
   
   private 
   
+  # we are in production mode if this job is scheduler via crontab
   def in_production_mode?
     `crontab -l`.split("\n").find do |l| 
       l[0] != '#' && l.include?('stopa-monitor/src/run.rb')
+    end
+  end
+  
+  def determine_reverse_ssh_tunnel_port ftp
+    @logger.debug "checking if server asks us to establish reverse ssh tunnel"
+    expected_file = File.join StopaMonitorConfig::REMOTE_WORKING_DIR, 'REVERSE_SSH_TUNNEL_PORT_*'
+    first_line = ftp.list(expected_file).first
+    #  "-rw-rw-r--   1 stopa_monitor3 stopa_monitor3        0 Jun  4 19:21 /home/stopa_monitor3/snapshots/REVERSE_SSH_TUNNEL_PORT_4321"
+    if first_line
+      port_no = first_line.match(/REVERSE_SSH_TUNNEL_PORT_(\d+)/)[1]
+      @reverse_ssh_tunnel_port = port_no.to_i
+      @logger.info "server asked us to establish reverse ssh tunnel on port #{@reverse_ssh_tunnel_port.inspect}"
+    else
+      @logger.debug "server did not want us to establish reverse ssh tunnel"
     end
   end
 end
