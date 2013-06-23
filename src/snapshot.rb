@@ -62,6 +62,7 @@ class Snapshot
   def run_health_check
     h = HealthCheck.new @logger, @capture_devices, @transfer_devices
     h.run
+    h.save_results_to_file File.join(@snapshot_dir, 'health_check.txt')
     @health_check_ok = h.ok
   end
   

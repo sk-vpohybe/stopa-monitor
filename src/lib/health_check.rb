@@ -50,24 +50,32 @@ class HealthCheck
     end
   end
   
+  def save_results_to_file path
+    output = "uptime_in_seconds:#{@uptime_in_seconds}\n"
+    output += "free_disk_space_in_mb:#{@free_disk_space_in_mb}\n"
+    output += "@free_ram_in_mb:#{@free_ram_in_mb}\n"
+    
+    File.open(path, 'w'){|f| f.write output}
+  end
+  
   private
   
   def uptime
     # 614.55 545.2
-    uptime_in_seconds = `cat /proc/uptime`.split(' ').first.to_i
-    return uptime_in_seconds
+    @uptime_in_seconds = `cat /proc/uptime`.split(' ').first.to_i
+    return @uptime_in_seconds
   end
   
   def free_disk_space
     # Filesystem     1K-blocks    Used Available Use% Mounted on
     # /dev/root        1804128 1574540    137940  92% /
-    free_disk_space_in_mb = `df`.split("\n")[1].split(' ')[-3].to_i / 1000
-    return free_disk_space_in_mb
+    @free_disk_space_in_mb = `df`.split("\n")[1].split(' ')[-3].to_i / 1000
+    return @free_disk_space_in_mb
   end
   
   def free_ram_space
-    free_ram_in_mb = `free -m`.split("\n")[1].split(" ")[3].to_i
-    return free_ram_in_mb
+    @free_ram_in_mb = `free -m`.split("\n")[1].split(" ")[3].to_i
+    return @free_ram_in_mb
   end
   
   def missing_capture_devices
