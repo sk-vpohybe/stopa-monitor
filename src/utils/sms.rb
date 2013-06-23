@@ -72,7 +72,7 @@ class GSM
 end
 
 
-p = GSM.new(:port => '/dev/ttyUSB0', :speed => '9600')
+p = GSM.new(:port => '/dev/ttyUSB0', :speed => 9600)
 
 # Send a text message
 # p.send_sms(:number => destination_number, :message => "Test at #{Time.now}")
