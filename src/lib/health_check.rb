@@ -53,7 +53,7 @@ class HealthCheck
   def save_results_to_file path
     output = "uptime_in_seconds:#{@uptime_in_seconds}\n"
     output += "free_disk_space_in_mb:#{@free_disk_space_in_mb}\n"
-    output += "@free_ram_in_mb:#{@free_ram_in_mb}\n"
+    output += "free_ram_in_mb:#{@free_ram_in_mb}\n"
     
     File.open(path, 'w'){|f| f.write output}
   end
