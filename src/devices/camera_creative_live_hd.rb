@@ -23,7 +23,7 @@ class CameraCreativeLiveHD
           @logger.debug `#{cmd} #{@output_file} 2>&1`
         end
       rescue Timeout::Error
-        @logger.error '15 second timeout expired while taking photo'
+        @logger.error 'timeout expired while taking photo'
       end
 
       if File.exists?(@output_file)
