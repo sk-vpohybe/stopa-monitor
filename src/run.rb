@@ -28,6 +28,7 @@ s.in_trasmission_window do
   s.upload
   s.establish_reverse_ssh_tunnel_if_required_by_server
 end
+s.cleanup
 s.close_and_reboot_if_necessary
 
 exit 0

@@ -180,6 +180,10 @@ class Snapshot
     
   end
   
+  def cleanup
+    OldSnapshotsCleaner.new(@logger, @snapshot_dir).run
+  end
+  
   def close_and_reboot_if_necessary
     @logger.info "closing snapshot"
     
