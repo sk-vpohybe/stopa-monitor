@@ -71,9 +71,9 @@ class Snapshot
       begin
         @logger.info "initializing device: #{device_klass}"
         device = device_klass.new @logger, @snapshot_dir
-        @logger.info "device is about to capture data"
+        @logger.info "device #{device_klass} is about to capture data"
         device.capture
-        @logger.info "done"
+        @logger.info "device #{device_klass} finished data capture"
       rescue => e
         @logger.error "#{e} #{e.class}"
       end
