@@ -181,7 +181,7 @@ class Snapshot
   end
   
   def cleanup
-    OldSnapshotsCleaner.new(@logger, @snapshot_dir).run
+    OldSnapshotsCleaner.new(@logger, WORKING_DIR).run
   end
   
   def close_and_reboot_if_necessary

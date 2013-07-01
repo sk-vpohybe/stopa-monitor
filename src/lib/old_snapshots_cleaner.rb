@@ -1,4 +1,4 @@
-require 'file_utils'
+require 'fileutils'
 
 class OldSnapshotsCleaner
   CLEANUP_AGE_DAYS = 20 
