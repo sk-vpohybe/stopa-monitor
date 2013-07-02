@@ -6,7 +6,9 @@ class Snapshot
   USB_CAPTURE_DEVICES = { # USB
     '0c45:7401' => ThermometerTEMPer1,
     '041e:4095' => CameraCreativeLiveHD,
-    '0c45:6340' => CameraCanyonCNR113
+    '0c45:6340' => CameraCanyonCNR113,
+    '12d1:141b' => SimCardSMS,
+    '12d1:1001' => SimCardSMS
   }
   
   USB_TRANSFER_DEVICES = { # USB
@@ -14,7 +16,7 @@ class Snapshot
     '12d1:1001' => ModemHuaweiE169
   }
   
-  GPIO_CAPTURE_DEVICES = [ThermometerHygrometerDHT11]
+  OTHER_CAPTURE_DEVICES = [ThermometerHygrometerDHT11]
   
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
@@ -48,9 +50,9 @@ class Snapshot
       end 
     end
     
-    # there is no way how to detect GPIO devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
+    # there is no way how to detect GPIO/other devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
     StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES.each do |device_klass|
-      if GPIO_CAPTURE_DEVICES.include? device_klass
+      if OTHER_CAPTURE_DEVICES.include? device_klass
         @capture_devices << device_klass
       end
     end
