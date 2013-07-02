@@ -6,6 +6,8 @@ unless File.new(__FILE__).flock(File::LOCK_EX | File::LOCK_NB)
   exit 1
 end
 
+require 'rubygems'
+require 'bundler/setup'
 require 'timeout'
 
 current_path = File.absolute_path(File.dirname(__FILE__))

@@ -1,0 +1,20 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    RubySunrise (0.3)
+      tzinfo
+    fileutils (0.7)
+      rmagick (>= 2.13.1)
+    net-ssh (2.6.7)
+    rmagick (2.13.2)
+    serialport (1.1.0)
+    tzinfo (1.0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  RubySunrise
+  fileutils
+  net-ssh
+  serialport
