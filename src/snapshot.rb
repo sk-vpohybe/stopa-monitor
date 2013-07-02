@@ -3,20 +3,6 @@ require 'net/ssh'
 
 class Snapshot
   WORKING_DIR = '/home/pi/snapshots'
-  USB_CAPTURE_DEVICES = { # USB
-    '0c45:7401' => ThermometerTEMPer1,
-    '041e:4095' => CameraCreativeLiveHD,
-    '0c45:6340' => CameraCanyonCNR113,
-    '12d1:141b' => SimCardSMS,
-    '12d1:1001' => SimCardSMS
-  }
-  
-  USB_TRANSFER_DEVICES = { # USB
-    '12d1:141b' => ModemHuaweiE1752,
-    '12d1:1001' => ModemHuaweiE169
-  }
-  
-  OTHER_CAPTURE_DEVICES = [ThermometerHygrometerDHT11]
   
   def initialize
     @timestamp = Time.now.strftime "%Y%m%d_%H%M%S"
@@ -34,31 +20,7 @@ class Snapshot
   end
   
   def detect_devices
-    @capture_devices = []
-    @transfer_devices = []
-    lsusb = `lsusb`
-    device_ids = lsusb.split("\n").collect{|l| l.split(' ')[5]}
-    device_ids.each do |device_id|
-      if USB_CAPTURE_DEVICES[device_id]
-        device_klass = USB_CAPTURE_DEVICES[device_id]
-        @capture_devices << device_klass
-      end
-      
-      if USB_TRANSFER_DEVICES[device_id]
-        device_klass = USB_TRANSFER_DEVICES[device_id]
-        @transfer_devices << device_klass
-      end 
-    end
-    
-    # there is no way how to detect GPIO/other devices, way have to trust StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES
-    StopaMonitorConfig::ATTACHED_CAPTURE_DEVICES.each do |device_klass|
-      if OTHER_CAPTURE_DEVICES.include? device_klass
-        @capture_devices << device_klass
-      end
-    end
-    
-    @logger.info "detected following capture devices: #{@capture_devices.join(', ')}"
-    @logger.info "detected following transfer devices: #{@transfer_devices.join(', ')}"
+    @capture_devices, @transfer_devices = DeviceDetector.new(@logger).detect_devices
   end
   
   def run_health_check
