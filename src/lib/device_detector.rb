@@ -36,7 +36,7 @@ class DeviceDetector
       
       if USB_TRANSFER_DEVICES[device_id]
         device_klass = USB_TRANSFER_DEVICES[device_id]
-        @transfer_devices << device_klass
+        transfer_devices << device_klass
       end 
     end
     
