@@ -1,7 +1,4 @@
 class HealthCheck
-  LOW_DISK_MB = 30
-  LOW_RAM_MB = 30 # mb
-  
   attr_reader :ok
   
   def initialize logger, capture_devices, transfer_devices
@@ -21,32 +18,20 @@ class HealthCheck
     ram = free_ram_space
     @logger.debug "free RAM space: #{ram} MB"
     
-    check_ok = true
-    if(hd < LOW_DISK_MB)
-      check_ok = false
-      @logger.warn "free disk space is only #{hd} MB"
-    end
-    
-    if(hd < LOW_RAM_MB)
-      check_ok = false
-      @logger.warn "free RAM space is only #{ram} MB"
-    end   
+    @ok = true
     
     if missing_capture_devices.size > 0
-      check_ok = false
+      @ok = false
       @logger.warn "missing capture device(s): #{missing_capture_devices.join(' ')}"
     end
     
     if missing_transfer_devices.size > 0
-      check_ok = false
+      @ok = false
       @logger.warn "missing transfer device(s): #{missing_transfer_devices.join(' ')}"
     end
     
-    if check_ok
-      @ok = true
+    if @ok
       @logger.info "Health Check OK"
-    else
-      @ok = false
     end
   end
   
