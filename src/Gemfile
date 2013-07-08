@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
 gem 'serialport'
 gem 'RubySunrise'
-gem 'fileutils'
 gem 'net-ssh'
