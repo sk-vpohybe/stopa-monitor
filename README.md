@@ -1,13 +1,13 @@
 # Raspberry Pi based Stopa Monitor
 
-Stopa Monitor is **waterproof**, **wall-mounted** device designed to **periodically** provide live information on **outdoor** conditions. We use it provide live information from [cross-country skiing tracks](http://www.nabezky.sk/monitor_na_korenatom_oznam).
+Stopa Monitor is **waterproof**, **wall-mounted** device designed to **periodically** provide live information on **outdoor** conditions via GPRS. We use it provide live information from [cross-country skiing tracks](http://www.nabezky.sk/monitor_na_korenatom_oznam).
 
 ## Design details
 
 * waterproof
 * open source, Raspberry Pi/Raspbian based
-* captures photo and temperature
-* uploads data via 3G modem
+* captures photo, temperature and humidity
+* uploads data via GPRS/3G modem
 * requires external power source (220V AC / 5V DC)
 
 ## Links
