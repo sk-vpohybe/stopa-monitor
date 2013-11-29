@@ -15,7 +15,7 @@ class CameraLogitechC270
       begin
         Timeout::timeout(TIMEOUT) do
           # we intentionally take three photos to allow the camera to autoset brightness/color
-          cmd = 'fswebcam --no-banner -d /dev/video0 -i 0 -r 1280x720 --jpeg 80 -D 1'
+          cmd = 'fswebcam --no-banner -d /dev/video0 -i 0 -r 1280x720 --jpeg 80 --rotate 180 -D 1'
           @logger.debug `#{cmd} /dev/null 2>&1`
           sleep 2
           @logger.debug `#{cmd} /dev/null 2>&1`
