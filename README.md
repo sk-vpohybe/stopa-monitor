@@ -24,5 +24,5 @@ Stopa Monitor is **waterproof**, **wall-mounted** device designed to **periodica
 
 Raspberry Pi based Stopa Monitor is released under the [MIT License](http://opensource.org/licenses/MIT).
 
-![first working prototype](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor3a.png)
-![first working prototype - opened](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor3b.png)
+![first working prototype](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor3a.jpg)
+![first working prototype - opened](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor3b.jpg)
