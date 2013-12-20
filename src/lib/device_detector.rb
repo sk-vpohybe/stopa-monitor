@@ -15,7 +15,9 @@ class DeviceDetector
   
   USB_TRANSFER_DEVICES = { 
     '12d1:141b' => ModemHuaweiE1752,
-    '12d1:1001' => ModemHuaweiE169
+    '12d1:1001' => ModemHuaweiE169,
+    '0471:1210' => ModemVodafoneMD950,
+    '1dbc:0005' => ModemVodafoneMD950
   }
   
   OTHER_CAPTURE_DEVICES = [ThermometerHygrometerDHT11]
