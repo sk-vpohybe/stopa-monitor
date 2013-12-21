@@ -1,4 +1,5 @@
 class ModemHuaweiE220
+# lsusb: ID 12d1:1003 Huawei Technologies Co., Ltd. E220 HSDPA Modem / E230/E270/E870 HSDPA/HSUPA Modem
  
 # /etc/wvdial.conf
 # [Dialer Defaults]
