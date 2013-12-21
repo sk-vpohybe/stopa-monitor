@@ -10,7 +10,8 @@ class DeviceDetector
     '046d:0825' => CameraLogitechC270,
     '093a:2700' => CameraPixart,
     '12d1:141b' => SimCardSMS,
-    '12d1:1001' => SimCardSMS
+    '12d1:1001' => SimCardSMS,
+    '12d1:1003' => SimCardSMS
   }
   
   USB_TRANSFER_DEVICES = { 
