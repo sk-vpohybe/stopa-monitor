@@ -66,6 +66,9 @@ class Snapshot
             if network_status.connected?
               block.call
             end
+          else
+            @logger.warn "Unable to connect to network - will try to reboot to fix it"
+            @health_check_ok = false
           end
         rescue => e
           @logger.error "#{e.class} #{e}"
