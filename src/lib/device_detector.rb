@@ -8,10 +8,7 @@ class DeviceDetector
     '041e:4095' => CameraCreativeLiveHD,
     '0c45:6340' => CameraCanyonCNR113,
     '046d:0825' => CameraLogitechC270,
-    '093a:2700' => CameraPixart,
-    '12d1:141b' => SimCardSMS,
-    '12d1:1001' => SimCardSMS,
-    '12d1:1003' => SimCardSMS
+    '093a:2700' => CameraPixart
   }
   
   USB_TRANSFER_DEVICES = { 
