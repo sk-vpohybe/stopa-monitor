@@ -65,6 +65,9 @@ class Snapshot
             sleep 10 # make sure the connection is really established
             if network_status.connected?
               block.call
+            else
+              @logger.warn "Unable to connect to network - will try to reboot to fix it"
+              @health_check_ok = false
             end
           else
             @logger.warn "Unable to connect to network - will try to reboot to fix it"
