@@ -15,6 +15,7 @@ Stopa Monitor is **waterproof**, **wall-mounted** device designed to **periodica
 * [Details on hardware](https://github.com/sk-vpohybe/stopa-monitor/wiki/Devices-tested-with-Raspbian).
 * [Additional information and random thoughts] (https://github.com/sk-vpohybe/stopa-monitor/wiki).
 * [Info on original Stopa Monitor](http://www.nabezky.sk/monitor_na_korenatom_oznam) (non-raspberry pi, but with battery) made by [Jano Gvozdjak](http://physicus.eu/).
+* [Simple HTML GUI for uploaded snapshots](https://github.com/petervojtek/stopa-monitor.html).
 
 ## Contact
 
