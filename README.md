@@ -23,7 +23,7 @@ Stopa Monitor is **waterproof**, **wall-mounted** device designed to **periodica
 
 ## License
 
-Raspberry Pi based Stopa Monitor is released under the [MIT License](http://opensource.org/licenses/MIT).
+Raspberry Pi based Stopa Monitor is released under the [WTFPL License](http://en.wikipedia.org/wiki/WTFPL).
 
 ![first working prototype](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor4a.jpg)
 ![first working prototype - opened](http://petervojtek.eu/pub/stopa-monitor/stopa-monitor4b.jpg)
